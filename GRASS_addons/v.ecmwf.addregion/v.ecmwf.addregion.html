@@ -1,0 +1,40 @@
+<h2>DESCRIPTION</h2>
+
+<em>v.ecmwf.addregion</em> adds a new partner region to existing partner regions. 
+Geometries are automatically cleaned and combined. The combination requires 
+a column to be used for merging (default: DISS_CENTR). This column holds the 
+code for thw dissemination center that takes responsibility for the new region.
+
+
+<h3>Topology cleaning</h3>
+
+When importing polygons, non-topological polygons are converted to 
+topological areas. Most potential errors in the input polygons (unexpected 
+overlapping areas, small gaps between polygons, or warnings about being 
+unable to calculate centroids) are automatically cleaned.
+
+
+<h2>EXAMPLE</h2>
+
+<div class="code"><pre>
+# import SHAPE file at full extent and reproject to current location projection
+v.ecmwf.addregion partner_regions=efas_partner_regions_epsg3857.shp \
+                  new_partner=galicia_region.shp \
+		  output=efas_partner_regions_epsg3857_v2.shp
+</pre></div>
+
+
+<h2>SEE ALSO</h2>
+
+<em>
+<a href="v.in.ogr.html">v.in.ogr</a>,
+<a href="v.clean.html">v.clean</a>,
+<a href="v.proj.html">v.proj</a>
+</em>
+
+<h2>AUTHORS</h2>
+
+Markus Metz
+
+<p>
+<i>Last changed: $Date$</i>
