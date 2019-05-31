@@ -231,7 +231,7 @@ def main():
     gscript.run_command('v.clean', input="partner_master_new_1",
                                    output="partner_master_new_2",
 				   tool="rmarea",
-				   thresh="1000000",
+				   thresh="50000000",
 				   flags="c")
 
     # dissolve with v.extract dissolve_column=DISS_CENTR
