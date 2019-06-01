@@ -77,6 +77,16 @@
 #% guisection: Input
 #%end
 #%option
+#% key: mingapsize
+#% type: integer
+#% required: no
+#% multiple: no
+#% label: Minimum gap size to keep
+#% description: All smaller gaps will be removed
+#% answer: 10000000
+#% guisection: Output
+#%end
+#%option
 #% key: output
 #% type: string
 #% required: yes
@@ -93,6 +103,26 @@
 #% required: no
 #% multiple: no
 #% label: Name for output OGR layer.
+#% description: For example: ESRI Shapefile: shapefile name
+#% guisection: Output
+#%end
+#%option
+#% key: gaps
+#% type: string
+#% required: yes
+#% multiple: no
+#% key_desc: name
+#% label: Name of OGR datasource for gaps
+#% description: For example ESRI Shapefile filename or directory for storage
+#% gisprompt: new,file,file
+#% guisection: Output
+#%end
+#%option
+#% key: gaps_layer
+#% type: string
+#% required: no
+#% multiple: no
+#% label: Name for gaps OGR layer.
 #% description: For example: ESRI Shapefile: shapefile name
 #% guisection: Output
 #%end
@@ -142,6 +172,9 @@ def main():
     partner_output = options['output']
     partner_output_layer = options['output_layer']
     output_format = options['format']
+    mingapsize = options['mingapsize']
+    gaps_dsn = options['gaps']
+    gaps_layer = options['gaps_layer']
 
     orgenv = gscript.gisenv()
     GISDBASE = orgenv['GISDBASE']
@@ -227,11 +260,11 @@ def main():
 				       query_column="b_%s" % (diss_column),
 				       where="b_%s is not null and %s = '-1'" % (diss_column, diss_column))
 
-    # clean up overlapping parts and small gaps
+    # clean up overlapping parts and gaps smaller mingapsize 
     gscript.run_command('v.clean', input="partner_master_new_1",
                                    output="partner_master_new_2",
 				   tool="rmarea",
-				   thresh="50000000",
+				   thresh=mingapsize,
 				   flags="c")
 
     # dissolve with v.extract dissolve_column=DISS_CENTR
@@ -241,8 +274,6 @@ def main():
                                       output="partner_master_new_3",
 				      column=diss_column)
 
-    # TODO: how to remove larger gaps ?
-
     # export
     kwargs = dict()
     if partner_output_layer:
@@ -251,11 +282,49 @@ def main():
                                      output=partner_output,
 				     type="area",
 				     format=output_format,
-				     flags="ms")
+				     flags="ms", **kwargs)
+    del kwargs
+
+    if gaps_dsn:
+	gscript.run_command('v.category', input="partner_master_new_3",
+	                                  output="gaps1",
+					  option="add",
+					  type="area",
+					  cat="1000",
+					  layer="1")
+	gscript.run_command('v.extract', input="gaps1",
+	                                 output="gaps",
+					 type="area",
+					 cats="1000-10000000",
+					 layer="1")
+	gscript.run_command('v.db.addcolumn', map="gaps",
+	                              column="area_km2 double")
+	gscript.run_command('v.to.db', map="gaps",
+	                               column="cat",
+				       option="cat")
+	gscript.run_command('v.to.db', map="gaps",
+	                               column="area_km2",
+				       option="area",
+				       units="kilometers")
+	gscript.run_command('v.type', input="gaps",
+	                              output="gaps_pnts1",
+				      from_type="centroid",
+				      to_type="point")
+	gscript.run_command('v.extract', input="gaps_pnts1",
+	                                 output="gaps_pnts",
+					 type="point")
+	kwargs = dict()
+	if gaps_layer:
+	    kwargs['output_layer'] = gaps_layer
+	gscript.run_command('v.out.ogr', input="gaps_pnts",
+					 output=gaps_dsn,
+					 type="point",
+					 format=output_format,
+					 flags="s", **kwargs)
 
     return 0
 
 if __name__ == "__main__":
     options, flags = gscript.parser()
-    atexit.register(cleanup)
+    #atexit.register(cleanup)
     sys.exit(main())
