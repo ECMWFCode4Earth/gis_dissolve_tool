@@ -1,29 +1,22 @@
 <h2>DESCRIPTION</h2>
 
 <em>v.ecmwf.riverbasins</em> updates the list of all the partner 
-institute IDs which lie within the same river basin as the 5km grid 
-point.
+institute IDs intersecting with each river basin.
 
 <p>
-The aim of this procedure is that for each 5km grid point in the 
-hydrological model we want to know: 1) which river basin it falls 
-within, and then 2) what partner regions regions lie within this basin. 
-The 5km grid point has an attribute called 'MOUids_all' (MOU = 
+The aim of this procedure is that for each basin in the hydrological 
+model we want to know: 1) what partner regions regions lie within this 
+basin. The basins become an attribute called 'MOUids_all' (MOU = 
 Memorandum of Understanding) which records a list all the partner 
-institute IDs which lie within the same river basin as the 5km grid 
-point.
+institute IDs which lie within each river basin.
 
 <p>
-The partner regions come from a different shapefile which stores the 
-separate polygon areas for each individual partner institute, rather 
-than the dissolved partner regions that we have been working with 
-previously.
+The input partner regions store the separate polygon areas for each 
+individual partner institute, rather than the dissolved partner regions 
+that we have been working with previously.
 
 <p>
-The location of the 5km grid points is given in a separate shapefile.
-
-<p>
-The river basins are given in the mainbasins shapefile.
+The input river basins are given in a separate datasource/layer.
 
 <p>
 The workflow is as follows:
@@ -32,23 +25,19 @@ The workflow is as follows:
     <li>Intersect the river basins with the individual (un-dissolved) 
     partner regions shapefile to identify partner regions which 
     intersect with each river basin.
-    <li>Intersect the 5km grid points with the main river basins to 
-    identify the river basin for each 5km grid point.
-    <li>Loop through each of the 5km grid points, using the 
-    corresponding river basin.
+    <li>Loop through each of the river basins.
     <li>Extract the partner ID for each of these partner regions which 
     intersect the corresponding river basin and assign them to the 
-    'MOUids_all' attribute of the 5km grid point.
+    'MOUids_all' attribute of the river basin.
 </ol>
 
 <h2>EXAMPLE</h2>
 
-Update the grid point attributes with new partner regions.
+Update river basin attributes with new partner regions.
 <div class="code"><pre>
 v.ecmwf.riverbasins partner_regions=ESoWC/MOUids_EFAS_LAEA_edited_v4.shp \
-                    grid_points=ESoWC/efas_river_network_named_v9.shp \
 		    basins=ESoWC/mainbasins_EU_EFAS_LAEA_ETRS89_v2_clean.shp \
-		    output=ESoWC/grid_points_new.shp</pre></div>
+		    output=ESoWC/mainbasins_new.shp</pre></div>
 
 <h2>SEE ALSO</h2>
 

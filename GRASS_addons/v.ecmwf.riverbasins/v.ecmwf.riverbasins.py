@@ -3,7 +3,7 @@
 #
 # MODULE:       v.ecmwf.riverbasins
 # AUTHOR(S):    Markus Metz, mundialis
-# PURPOSE:      Update grid points with MOU_IDS of all partner regions
+# PURPOSE:      Update basns with MOU_IDS of all partner regions
 # COPYRIGHT:    (C) 2019 by the GRASS Development Team
 #
 #  This program is free software; you can redistribute it and/or modify
@@ -58,36 +58,6 @@
 #% guisection: Input
 #%end
 #%option
-#% key: grid_points
-#% type: string
-#% required: yes
-#% multiple: no
-#% label: Name of OGR datasource with grid points
-#% gisprompt: old,datasource,datasource
-#% guisection: Input
-#%end
-#%option
-#% key: grid_points_layer
-#% type: string
-#% required: no
-#% multiple: no
-#% label: OGR layer name for grid points. 
-#% description: If not given, all available layers are used
-#% gisprompt: old,datasource_layer,datasource_layer
-#% guisection: Input
-#%end
-#%option
-#% key: all_partner_id
-#% type: string
-#% required: no
-#% multiple: no
-#% key_desc: name
-#% description: Name of the column with all partner IDs for grid points (default: MOUids_all)
-#% answer: MOUids_all
-#% gisprompt: old,dbcolumn,dbcolumn
-#% guisection: Input
-#%end
-#%option
 #% key: basins
 #% type: string
 #% required: yes
@@ -104,6 +74,17 @@
 #% label: OGR layer name for basins. 
 #% description: If not given, all available layers are used
 #% gisprompt: old,datasource_layer,datasource_layer
+#% guisection: Input
+#%end
+#%option
+#% key: all_partner_id
+#% type: string
+#% required: no
+#% multiple: no
+#% key_desc: name
+#% description: Name of the column with all partner IDs for basins (default: MOUids_all)
+#% answer: MOUids_all
+#% gisprompt: old,dbcolumn,dbcolumn
 #% guisection: Input
 #%end
 #%option
@@ -167,12 +148,10 @@ def main():
     partner_regions = options['partner_regions']
     partner_regions_layer = options['partner_regions_layer']
     partner_id_column = options['partner_id']
-    grid_points = options['grid_points']
-    grid_points_layer = options['grid_points_layer']
-    all_partner_id_column = options['all_partner_id']
 
     basins = options['basins']
     basins_layer = options['basins_layer']
+    all_partner_id_column = options['all_partner_id']
 
     output = options['output']
     output_layer = options['output_layer']
@@ -182,14 +161,15 @@ def main():
     GISDBASE = orgenv['GISDBASE']
     TMPLOC = 'ECMWF_temp_location_' + str(os.getpid())
 
-    # import grid points with v.in.ogr into new location
+    # import basins with v.in.ogr into new location
+    # need to snap, assume units are meters !!!
     kwargs = dict()
-    if grid_points_layer:
-	kwargs['layer'] = grid_points_layer
-    gscript.run_command('v.in.ogr', input=grid_points,
-				    output="grid_points",
+    if basins_layer:
+	kwargs['layer'] = basins_layer
+    gscript.run_command('v.in.ogr', input=basins,
+				    output="basins",
 				    location=TMPLOC,
-				    **kwargs)
+				    snap="10", **kwargs)
     del kwargs
 
     # switch to new location
@@ -197,13 +177,14 @@ def main():
     switchloc = True
 
     # check if we have an attribute table
-    dbinfo = gscript.vector_db("grid_points")
+    dbinfo = gscript.vector_db("basins")
     if 1 not in dbinfo.keys():
 	# add new table 
-	gscript.run_command('v.db.addtable', map="grid_points")
+	gscript.run_command('v.db.addtable', map="basins")
+	dbinfo = gscript.vector_db("basins")
 
     # check if the column all_partner_id_column exists
-    columns = gscript.read_command('v.info', map="grid_points", flags="c")
+    columns = gscript.read_command('v.info', map="basins", flags="c")
 
     found = False
     for line in columns.splitlines():
@@ -213,8 +194,15 @@ def main():
 
     if found is False:
 	# add column
-	gscript.run_command('v.db.addcolumn', map="grid_points",
+	gscript.run_command('v.db.addcolumn', map="basins",
 	                                      column="%s varchar(255)" % (all_partner_id_column))
+    else:
+	# clear column entries
+	table = dbinfo[1]['table']
+	database = dbinfo[1]['database']
+	driver = dbinfo[1]['driver']
+	sqlcmd = "UPDATE %s SET %s = NULL" % (table, all_partner_id_column)
+	gscript.write_command('db.execute', input='-', database=database, driver=driver, stdin=sqlcmd)
 
     # import all partner polygons with v.import
     # need to snap, assume units are meters !!!
@@ -249,29 +237,6 @@ def main():
 				   thresh=mingapsize,
 				   flags="c")
 
-
-    # import river basins with v.import
-    # need to snap, assume units are meters !!!
-
-    kwargs = dict()
-    if basins_layer:
-	kwargs['layer'] = basins_layer
-    gscript.run_command('v.import', input=basins,
-				    output="basins",
-				    snap="10", **kwargs)
-    del kwargs
-
-    # add new column basin_cat to gird_points
-    gscript.run_command('v.db.addcolumn', map="grid_points",
-					  column="basin_cat integer")
-
-    # upload basin cat to grid points
-    gscript.run_command('v.what.vect', map="grid_points",
-				       column="basin_cat",
-				       query_map="basins",
-				       query_column="cat")
-
-
     # combine basins and partner regions with v.overlay with snap=0.01
     gscript.run_command('v.overlay', ainput="basins",
                                      atype="area",
@@ -283,20 +248,22 @@ def main():
 				     snap="0.01")
 
 
-    # select all basin cats from grid points
-    basincats = gscript.read_command('v.db.select', map="grid_points",
-                                                    column="basin_cat",
-						    where="basin_cat is not null",
+    # select all basin cats from basins
+    basincats = gscript.read_command('v.db.select', map="basins",
+                                                    column="cat",
 						    flags="c")
+
+    basincatsint = [int(c) for c in basincats.splitlines()]
+    basincatsint = sorted(set(basincatsint))
     
     # loop over basin cats
-    gscript.message(_("Updating grid points with partner region IDs, this can take some time.."))
-    for bcat in basincats.splitlines():
+    gscript.message(_("Updating %d basins with partner region IDs, this can take some time..") % (len(basincatsint)))
+    for bcat in basincatsint:
 
 	# for each basin cat, select all partner ids from the overlay
 	pcats = gscript.read_command('v.db.select', map="basins_partners",
                                                     column="b_%s" % (partner_id_column),
-						    where="a_cat = %s" % (bcat),
+						    where="a_cat = %d" % (bcat),
 						    flags="c")
 
 	# create comma-separated list and upload to grid points, 
@@ -310,23 +277,23 @@ def main():
 	    
 	    pcatlist = sorted(set(pcatlist))
 	    pcatstring = ','.join(str(c) for c in pcatlist)
-	    gscript.run_command('v.db.update', map="grid_points",
+	    gscript.run_command('v.db.update', map="basins",
 					       column=all_partner_id_column,
 					       value=pcatstring,
-					       where="basin_cat = %s" % (bcat),
+					       where="cat = %d" % (bcat),
 					       quiet=True)
 
 
 
-    # export updated grid points
+    # export updated basins
     kwargs = dict()
     if output_layer:
 	kwargs['output_layer'] = output_layer
-    gscript.run_command('v.out.ogr', input="grid_points",
+    gscript.run_command('v.out.ogr', input="basins",
                                      output=output,
-				     type="point",
+				     type="area",
 				     format=output_format,
-				     flags="s", **kwargs)
+				     flags="sm", **kwargs)
     del kwargs
 
     return 0
