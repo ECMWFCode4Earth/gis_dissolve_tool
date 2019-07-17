@@ -90,7 +90,7 @@ v.ecmwf.gridpoints partner_regions=/path/to/MOUids_EFAS_LAEA_edited_v4.shp \
 v.ecmwf.riverbasins
 ===================
 
-## How to run `v.ecmwf.gridpoints`
+## How to run `v.ecmwf.riverbasins`
 
 This GRASS addon uses as input the main basins and the existing partner 
 regions. The purpose id to update basins with MOU IDs of existing and 
