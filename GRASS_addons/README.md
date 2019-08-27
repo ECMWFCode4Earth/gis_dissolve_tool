@@ -2,7 +2,7 @@ GRASS addons for the GIS dissolve tool
 ======================================
 
 Here are GRASS addons that are the base for QGIS plugins. The QGIS 
-plugins will use exactly the same fuunctionality and workflow, but with 
+plugins will use exactly the same functionality and workflow, but with 
 a different user interface.
 
 ## How to install a GRASS addon
