@@ -16,18 +16,18 @@ import unittest
 
 from qgis.PyQt.QtGui import QDialogButtonBox, QDialog
 
-from ecmwf_basins_dialog import BasinsDialog
+from ecmwf_gridpoints_dialog import GridpointsDialog
 
 from utilities import get_qgis_app
 QGIS_APP = get_qgis_app()
 
 
-class BasinsDialogTest(unittest.TestCase):
+class GridpointsDialogTest(unittest.TestCase):
     """Test dialog works."""
 
     def setUp(self):
         """Runs before each test."""
-        self.dialog = BasinsDialog(None)
+        self.dialog = GridpointsDialog(None)
 
     def tearDown(self):
         """Runs after each test."""
@@ -49,7 +49,7 @@ class BasinsDialogTest(unittest.TestCase):
         self.assertEqual(result, QDialog.Rejected)
 
 if __name__ == "__main__":
-    suite = unittest.makeSuite(BasinsDialogTest)
+    suite = unittest.makeSuite(GridpointsDialogTest)
     runner = unittest.TextTestRunner(verbosity=2)
     runner.run(suite)
 

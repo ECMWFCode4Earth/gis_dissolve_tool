@@ -18,7 +18,7 @@ from qgis.PyQt.QtGui import QIcon
 
 
 
-class BasinsDialogTest(unittest.TestCase):
+class GridpointsDialogTest(unittest.TestCase):
     """Test rerources work."""
 
     def setUp(self):
@@ -31,12 +31,12 @@ class BasinsDialogTest(unittest.TestCase):
 
     def test_icon_png(self):
         """Test we can click OK."""
-        path = ':/plugins/Basins/icon.png'
+        path = ':/plugins/Gridpoints/icon.png'
         icon = QIcon(path)
         self.assertFalse(icon.isNull())
 
 if __name__ == "__main__":
-    suite = unittest.makeSuite(BasinsResourcesTest)
+    suite = unittest.makeSuite(GridpointsResourcesTest)
     runner = unittest.TextTestRunner(verbosity=2)
     runner.run(suite)
 
