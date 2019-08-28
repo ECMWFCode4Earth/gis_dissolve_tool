@@ -306,6 +306,10 @@ class DissolveTool:
             print("GRASS command:")
             print("%s" % gcommands)
 
+            self.iface.messageBar().pushMessage(
+              "Start", "Adding the new partner region, please wait...",
+              level=Qgis.Info)
+
             Grass7Utils.executeGrass([gcommands], feedback)
 
             Grass7Utils.endGrassSession()
