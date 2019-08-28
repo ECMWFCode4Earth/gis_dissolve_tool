@@ -297,6 +297,10 @@ class Basins:
             print("GRASS command:")
             print("%s" % gcommands)
 
+            self.iface.messageBar().pushMessage(
+              "Start", "Updating river basins, please wait...",
+              level=Qgis.Info)
+
             Grass7Utils.executeGrass([gcommands], feedback)
 
             Grass7Utils.endGrassSession()
