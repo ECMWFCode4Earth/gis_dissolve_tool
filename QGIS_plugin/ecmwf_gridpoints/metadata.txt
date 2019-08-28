@@ -3,7 +3,7 @@
 # This file should be included when you package your plugin.# Mandatory items:
 
 [general]
-name=ECMWF gridpoints
+name=ECMWF update gridpoints
 qgisMinimumVersion=3.0
 description=This plugin updates ECMWF grid points
 version=0.1
