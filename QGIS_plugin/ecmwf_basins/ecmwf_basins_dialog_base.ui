@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>ECMWF grid points</string>
+   <string>ECMWF basins</string>
   </property>
   <widget class="QDialogButtonBox" name="button_box">
    <property name="geometry">
