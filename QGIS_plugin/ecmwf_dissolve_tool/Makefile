@@ -1,7 +1,7 @@
 #/***************************************************************************
 # DissolveTool
 #
-# This plugin updates ECMWF partner regions and river basins
+# This plugin updates ECMWF partner regions
 #							 -------------------
 #		begin				: 2019-08-26
 #		git sha				: $Format:%H$
