@@ -3,14 +3,14 @@
 # This file should be included when you package your plugin.# Mandatory items:
 
 [general]
-name=ECMWF add partner region
+name=ECMWF update basins
 qgisMinimumVersion=3.0
-description=This plugin updates ECMWF partner regions
+description=This plugin updates ECMWF basins
 version=0.1
 author=mundialis
 email=metz@mundialis.de
 
-about=Update ECMWF partner regions with a new partner region.
+about=Update ECMWF basins.
 
 tracker=http://bugs
 repository=http://repo

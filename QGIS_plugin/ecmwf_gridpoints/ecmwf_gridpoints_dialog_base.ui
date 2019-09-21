@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>DissolveToolDialogBase</class>
- <widget class="QDialog" name="DissolveToolDialogBase">
+ <class>GridpointsDialogBase</class>
+ <widget class="QDialog" name="GridpointsDialogBase">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>ECMWF add new partner region</string>
+   <string>ECMWF grid points</string>
   </property>
   <widget class="QDialogButtonBox" name="button_box">
    <property name="geometry">
@@ -49,7 +49,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>Existing partner regions</string>
+    <string>Partner regions</string>
    </property>
   </widget>
   <widget class="QComboBox" name="comboBox_2">
@@ -72,69 +72,33 @@
     </rect>
    </property>
    <property name="text">
-    <string>Partner region to be added</string>
+    <string>Grid points</string>
    </property>
   </widget>
   <widget class="QLabel" name="label_3">
    <property name="geometry">
     <rect>
      <x>30</x>
-     <y>270</y>
+     <y>330</y>
      <width>271</width>
      <height>19</height>
     </rect>
    </property>
    <property name="text">
-    <string>Updated partner regions</string>
+    <string>Updated grid points</string>
    </property>
   </widget>
   <widget class="QLineEdit" name="lineEdit">
    <property name="geometry">
     <rect>
      <x>340</x>
-     <y>270</y>
+     <y>320</y>
      <width>181</width>
      <height>27</height>
     </rect>
    </property>
   </widget>
   <widget class="QPushButton" name="pushButton">
-   <property name="geometry">
-    <rect>
-     <x>540</x>
-     <y>270</y>
-     <width>31</width>
-     <height>27</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>...</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_4">
-   <property name="geometry">
-    <rect>
-     <x>30</x>
-     <y>320</y>
-     <width>271</width>
-     <height>19</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Remaining gaps</string>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="lineEdit_2">
-   <property name="geometry">
-    <rect>
-     <x>340</x>
-     <y>320</y>
-     <width>181</width>
-     <height>27</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="pushButton_2">
    <property name="geometry">
     <rect>
      <x>540</x>
@@ -157,7 +121,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>Folder with v.ecmwf.addregion</string>
+    <string>Folder with v.ecmwf.gridpoints</string>
    </property>
   </widget>
   <widget class="QLineEdit" name="lineEdit_3">
@@ -187,33 +151,39 @@
    <property name="geometry">
     <rect>
      <x>30</x>
-     <y>150</y>
+     <y>200</y>
      <width>221</width>
      <height>19</height>
     </rect>
    </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;default: MOU_IDS&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
    <property name="text">
-    <string>Minimum gap size</string>
+    <string>Column with partner ID</string>
    </property>
   </widget>
   <widget class="QLabel" name="label_7">
    <property name="geometry">
     <rect>
      <x>30</x>
-     <y>200</y>
+     <y>240</y>
      <width>271</width>
      <height>19</height>
     </rect>
    </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;default: MOUids_all&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
    <property name="text">
-    <string>Dissolve column name</string>
+    <string>Column with all partner IDs</string>
    </property>
   </widget>
   <widget class="QLineEdit" name="lineEdit_4">
    <property name="geometry">
     <rect>
      <x>410</x>
-     <y>140</y>
+     <y>200</y>
      <width>161</width>
      <height>27</height>
     </rect>
@@ -223,9 +193,32 @@
    <property name="geometry">
     <rect>
      <x>410</x>
-     <y>190</y>
+     <y>240</y>
      <width>161</width>
      <height>27</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_4">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>130</y>
+     <width>241</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Basins</string>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="comboBox_3">
+   <property name="geometry">
+    <rect>
+     <x>340</x>
+     <y>130</y>
+     <width>231</width>
+     <height>23</height>
     </rect>
    </property>
   </widget>
@@ -235,7 +228,7 @@
   <connection>
    <sender>button_box</sender>
    <signal>accepted()</signal>
-   <receiver>DissolveToolDialogBase</receiver>
+   <receiver>GridpointsDialogBase</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -251,7 +244,7 @@
   <connection>
    <sender>button_box</sender>
    <signal>rejected()</signal>
-   <receiver>DissolveToolDialogBase</receiver>
+   <receiver>GridpointsDialogBase</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

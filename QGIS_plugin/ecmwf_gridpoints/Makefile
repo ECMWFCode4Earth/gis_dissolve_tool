@@ -1,7 +1,7 @@
 #/***************************************************************************
-# DissolveTool
+# Gridpoints
 #
-# This plugin updates ECMWF partner regions
+# This plugin updates ECMWF grid points
 #							 -------------------
 #		begin				: 2019-08-26
 #		git sha				: $Format:%H$
@@ -38,15 +38,15 @@ LOCALES =
 # translation
 SOURCES = \
 	__init__.py \
-	ecmwf_dissolve_tool.py ecmwf_dissolve_tool_dialog.py
+	ecmwf_gridpoints.py ecmwf_gridpoints_dialog.py
 
-PLUGINNAME = ecmwf_dissolve_tool
+PLUGINNAME = ecmwf_gridpoints
 
 PY_FILES = \
 	__init__.py \
-	ecmwf_dissolve_tool.py ecmwf_dissolve_tool_dialog.py
+	ecmwf_gridpoints.py ecmwf_gridpoints_dialog.py
 
-UI_FILES = ecmwf_dissolve_tool_dialog_base.ui
+UI_FILES = ecmwf_gridpoints_dialog_base.ui
 
 EXTRAS = metadata.txt icon.png
 

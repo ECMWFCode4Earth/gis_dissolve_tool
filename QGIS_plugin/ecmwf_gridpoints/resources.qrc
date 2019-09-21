@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/plugins/ecmwf_gridpoints" >
+        <file>icon.png</file>
+    </qresource>
+</RCC>
